@@ -1,0 +1,13 @@
+# Install as a user service: cp hr-bridge-pico.service ~/.config/systemd/user/
+# Then: systemctl --user enable --now hr-bridge-pico
+[Unit]
+Description=hr-bridge-pico
+After=bluetooth.target
+
+[Service]
+ExecStart=%h/.local/bin/hr-bridge-pico --quiet
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

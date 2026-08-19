@@ -1,0 +1,5 @@
+mpremote>=1.22
+ruff
+build
+pyinstaller
+mpy-cross
