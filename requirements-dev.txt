@@ -1,4 +1,4 @@
-mpremote>=1.28.0
+mpremote>=1.29.0
 ruff
 build
 pyinstaller
