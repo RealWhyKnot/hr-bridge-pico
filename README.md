@@ -26,7 +26,7 @@ entirely.
 | Consumer | hr-osc, or anything that accepts an HTTP POST holding a bare number |
 
 The Pico is doing all the Bluetooth work, so the computer needs no Bluetooth
-hardware, no drivers, and no pairing.
+hardware and no pairing.
 
 ## What you need
 
@@ -36,7 +36,7 @@ hardware, no drivers, and no pairing.
 
 ## Setting up the Pico
 
-**1. Flash MicroPython.**
+### 1. Flash MicroPython
 
 Hold the BOOTSEL button while plugging the board in. It appears as a USB drive
 called `RPI-RP2`. Download the `.uf2` for your board and drop it on that drive:
@@ -46,7 +46,7 @@ called `RPI-RP2`. Download the `.uf2` for your board and drop it on that drive:
 
 The board reboots on its own once the file finishes copying.
 
-**2. Copy the firmware.**
+### 2. Copy the firmware
 
 ```bash
 pip install mpremote
@@ -67,7 +67,7 @@ mpremote connect auto fs cp firmware/hr_config.example.py :hr_config.py
 Leaving it empty means the board connects to the first heart rate strap it finds,
 which is what you want unless there are several in the room.
 
-**3. Check it works.**
+### 3. Check it works
 
 ```bash
 mpremote connect auto
@@ -123,7 +123,7 @@ hr-bridge-pico
 ```
 
 That is the whole configuration in the normal case. It finds the board, reads it,
-and posts to `http://127.0.0.1:8080`. It waits patiently if the board is not
+and posts to `http://127.0.0.1:8080`. It waits if the board is not
 plugged in yet, and it keeps reading if hr-osc is closed, so start order does not
 matter.
 
@@ -168,7 +168,9 @@ The log is written to `bridge.log` under your platform's data directory:
 Templates for all three platforms are in `packaging/`, and in the `autostart`
 folder of the release zip.
 
-**Windows.** Put a shortcut to `start-hidden.vbs` in the Startup folder. Press
+### Windows
+
+Put a shortcut to `start-hidden.vbs` in the Startup folder. Press
 Win+R and enter `shell:startup` to open it. In the release zip the script is in
 `autostart`, one folder below `hr-bridge-pico.exe`; in a clone it is in
 `packaging`, one folder below the `.venv`. It finds either without being moved.
@@ -177,14 +179,16 @@ Moving the folder afterwards does break the logon start: the shortcut records th
 old path, and so does an editable install. Re-create the shortcut, and from a
 clone re-run `pip install -e .`.
 
-**macOS.** Edit `dev.whyknot.hr-bridge-pico.plist` to replace `USERNAME`, then:
+### macOS
+
+Edit `dev.whyknot.hr-bridge-pico.plist` to replace `USERNAME`, then:
 
 ```bash
 cp packaging/dev.whyknot.hr-bridge-pico.plist ~/Library/LaunchAgents/
 launchctl load ~/Library/LaunchAgents/dev.whyknot.hr-bridge-pico.plist
 ```
 
-**Linux.**
+### Linux
 
 ```bash
 cp packaging/hr-bridge-pico.service ~/.config/systemd/user/
@@ -193,27 +197,39 @@ systemctl --user enable --now hr-bridge-pico
 
 ## When something is wrong
 
-**Read the log first.** It records every state change: which port it opened, the
+### Read the log first
+
+It records every state change: which port it opened, the
 first reading it saw, and every disconnect.
 
-**"waiting for the board".** The Pico is not plugged in, or the cable is
+### "waiting for the board"
+
+The Pico is not plugged in, or the cable is
 charge-only. Check that the board shows up as a serial device. `mpremote connect
 auto` failing too means the problem is the board or cable, not this program.
 
-**Nothing appears in hr-osc.** Confirm the log says `streaming, first bpm ...`.
+### Nothing appears in hr-osc
+
+Confirm the log says `streaming, first bpm ...`.
 If it does, the bridge is working and the problem is in hr-osc's configuration;
 go back to the hr-osc section above. The bridge does not warn you when hr-osc is
 closed, because that is a normal thing to happen while you are getting set up.
 
-**The port is busy.** Only one program can hold the serial port. If you want to
+### The port is busy
+
+Only one program can hold the serial port. If you want to
 run `mpremote`, stop the bridge first. This is also why the bridge refuses to
 start twice.
 
-**`ClearCommError` in the log on Windows.** The USB serial endpoint dropped, which
+### `ClearCommError` in the log on Windows
+
+The USB serial endpoint dropped, which
 happens now and then. The bridge notices, waits three seconds, and reopens the
 port. Nothing to do.
 
-**`# no strap found, rescanning`.** Most straps only advertise while worn against
+### `# no strap found, rescanning`
+
+Most straps only advertise while worn against
 skin. Put it on, moisten the contacts, and give it ten seconds. A strap already
 connected to a phone will not accept a second connection.
 
